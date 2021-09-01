@@ -1,0 +1,412 @@
+\documentclass[titlepage, hidelinks, 12pt]{article}
+
+
+%for custom page numbering:
+\usepackage{fancyhdr}
+
+\usepackage{lipsum}
+\usepackage{hyperref}
+\usepackage{palatino}
+\usepackage{tikz}
+\usepackage{chngcntr}
+\counterwithin{figure}{section}
+%\usepackage{breqn} % useful for breaking equations across multiple lines automatically. Breaks everything.
+
+
+\usepackage{setspace}
+%\usepackage{indentfirst} %tex default is no indent on first paragraph after heading
+\usepackage{url}
+\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{float}
+\usepackage{subfig}
+\usepackage{graphicx}
+\usepackage{environ, enumerate}
+%\usepackage{mathbbol}
+%\DeclareSymbolFontAlphabet{\amsmathbb}{AMSb}
+\graphicspath{ {images/} }
+\providecommand{\keywords}[1]{\textbf{\textit{Keywords---}} #1} 
+\usepackage[format=plain,
+            labelfont={bf, it},
+            textfont=it]{caption}
+
+
+
+
+
+%%%%%%%%%
+% indentation
+%%%%%%%%%
+
+\setlength\parindent{0pt}
+\setlength{\parskip}{\baselineskip}
+
+\setlength{\voffset}{-1cm}
+\setlength{\textwidth}{17cm}
+\addtolength{\textheight}{2cm}
+\setlength{\footskip}{1cm}
+\addtolength{\oddsidemargin}{-2cm}
+\addtolength{\evensidemargin}{-2cm}
+
+\widowpenalty10000
+\clubpenalty10000
+
+
+
+%%%%%%%%%
+% page numbering and logo
+%%%%%%%%%
+
+\pagestyle{fancy}            
+
+\fancyhead[L]{}
+\fancyhead[C, R]{}
+\fancyfoot[L]{}
+\fancyfoot[C]{\thepage}
+\fancyfoot[R]{\includegraphics[scale=.35]{sb_logo_black.png}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+
+%Def, Lemma, Theorem, Corollary environment
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+%\newtheorem*{proof}{Proof}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{example}{Example}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+%New commands
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\betahat}{\hat{\beta}}
+
+
+%New math operators
+\DeclareMathOperator{\ringchar}{char}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\disc}{disc}
+\DeclareMathOperator*{\argmax}{arg\,max}
+%\DeclareMathOperator{\exp}{exp}
+\renewcommand\d[1]{\:\textrm{d}#1}
+\newcommand*\diff{\mathop{\!\mathrm{d}}}
+\doublespacing
+\begin{document}
+\begin{singlespace}
+\begin{titlepage}
+   \begin{center}
+       \vspace*{1cm}
+\Huge
+       \textbf{Squirrel banking} \\
+\Large
+       \vspace{0.5cm}
+       Evolutionarily optimal caching. 
+      
+            
+       \vspace{4.1cm}
+       \includegraphics[scale = 1.4]{sb_logo_black.png} \\
+       \vspace*{\fill}
+       \textbf{Eric Rozon} \\
+
+            
+       Department of Mathematics\\
+       University of British Columbia
+            
+   \end{center}
+\end{titlepage}
+
+
+
+
+
+\begin{abstract}
+
+    First read, last written. 
+    \bigskip
+
+    \begin{keywords}
+    Some, key, words. 
+    \end{keywords}
+
+\end{abstract}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+%\section*{Acknowledgements}
+%\addcontentsline{toc}{section}{Acknowledgement}
+%My most sincere thanks are owed to Monica Nevins, without the support and guidance of whom none
+%of this project would have been possible. Monica, it was a joy and a privilege to work so
+%closely with you this semester, and I hope you are aware that my interest in mathematical research
+%is due in no small part to your enthusiasm. I would also like to thank Professor Rafal Kulik for
+%allowing me the opportunity to present part of this project during the University of Ottawa's final
+%math club meeting of 2018. Finally, if you are reading this report, then thank you. While the project
+%was stimulating enough in its own right that I do not feel it must be read by others to have been
+%worthwhile, it is also fun to think that someone else may find some joy or usefulness in my work.
+%\newpage
+%\input{texfiles/outline}
+%\newpage
+\end{singlespace}
+
+
+
+
+
+\section{Introduction}
+We are often told that patience is a virtue. At the same times, the early bird gets the worm. 
+While the sentiments expressed are in direct opposition, common sense dictates that each paradigme is of value. 
+When making a decision between immediate and delayed gratification, the reconciliation of patiece and hastiness
+may be translated into a question of how one ought to value time versus material gain. 
+
+The theory of delay discounting has strong roots in economic theory \cite{sozou98, fedus19}. Models of discounting seek to axiomatize rational
+behaviour and prescribe optimal preferences (patience or hastiness) facing decisions across different time horizons \cite{mazur97, ainslie75, green81}. 
+Nevertheless, popular theories of discounting have severe limitations. In particular, experiments involving both human and non-human animals 
+consistently find behaviour which is both qualitatively and quantitatively different from that predicted by standard 
+models \cite{maia09, green04, frederick02}.
+
+Axiomatic approaches to understanding decisions between patience and impulsiveness are insufficient. Instead, in this article we consider
+an evolutionary approach to understanding patience. The brain (both human and non-human) often makes decisions that we do not fully consider
+or rationalize; such brain functions are governed by what has been coined the adaptive unconscious \cite{wegner02}. In an evolutionary time scale,
+those brains which make quick decisions which are favourable for gene proliferation are selected for and become the dominant brain type in a population.
+In particular, we apply this reasoning to patience: those individuals whose patience is most adaptive will fixate in a population and drive all other
+types to extinction.
+
+In this article, we put forward an idealized model of squirrels foraging and banking nuts. Squirrels may either bank their nuts to guard against
+starvation, or else consume additional nuts to produce offpsring. Ecologically, the squirrels in our model face a survival versus reproduction
+tradeoff. From the perspective of patience, this translates into a question of fewer offspring more immediately (smaller and sooner benefit) 
+or reproduction over a longer time span resulting in more offspring but later in life (larger and later benefit). By considering squirrels with
+varying levels of patience (as measured by cache size before reproduction), we address the question: How much patience is evolutionarily optimal?
+
+
+\section{Model}
+Suppose a squirrel forrages daily for nuts. Each day, the squirrel finds either $0, 1,$ or $2$ nuts, with probabilities $p_0, p_1$, and $p_2$
+respectively. If the squirrel consumes $0$ nuts, it dies. By consuming a single nut, the squirrel keeps itself alive. Finally, should the squirrel
+consume $2$ nuts, it both keeps itself alive and produces an offspring. The offspring is subject to a one day period of parental care during
+which it survives if and only if its parent survives. 
+
+The life of a single squirrel is a stochastic process. The squirrel's survival and reproductive events are determined by the random process of
+finding nuts. In a large (or infinite) population of squirrels, we assume nut findings are independent (both between individuals and day to day),
+so that we may interpret that a fraction $p_n$ find $n$ nuts each day (for $n=0,1,2$). We consider the question of population growth: for what distributions 
+$(p_0, p_1, p_2)$ will the squirrel population die out, remain constant, and grow exponentially? The introduction of a demographic matrix
+helps to answer this question. Squirrels can be divided into two categories:
+\begin{enumerate}
+    \item Squirrels not providing parental care; and
+    \item squirrels providing parental care.
+\end{enumerate}
+
+Transitions between the two states are governed by linear probabilities, so that the matrix $D_0$ encapsulates
+all information necessary to understand the dynamics of the population of squirrels.
+\begin{equation}
+D_0 =
+\begin{pmatrix}
+    p_1 & 2(p_1 + p_2) \\ p_2 & 0
+\end{pmatrix}
+    \label{eqn:D0}
+\end{equation}
+We may codify an initial population of squirrels where no individual is providing parental care by the state vector $\left[ 1, 0 \right]^\intercal$. 
+On day $t\ge 0$, the population will be in state $D_0^t\cdot \left[1, 0\right]^\intercal$. Standard results from the study of structured populations
+imply (subject to minor diagonalizability requirements) that the largest positive eigenvalue $\lambda_0$ of $D_0$ is the growth 
+rate of the population of squirrels. The population converges to a stable proportion in each class, and then whether $\lambda_0\gtreqless 1$ 
+detetmines if the population is growing, constant, or decaying exponentially. Throughout, we refer to growth rate and fitness interchangeably. 
+
+One objective for this model is to understand the evolution of patience. To the end of modelling differing levels of patience, we allow
+squirrels to bank nuts to guard against starvation.
+Rather than using all additional nuts to produce offspring immediately, a more patient population first caches an additional nut to guard against starvation
+and later uses additional nuts to produce offspring. Intuitively, therefore, patient squirrels will delay reproduction but on average live
+longer and so produce more offspring. A population of patient squirrels can be divided into three disjoint categories:
+\begin{enumerate}
+    \item Squirrels having cached $0$ nuts;
+    \item squirrels having cached $1$ nut and not providing parental care; and
+    \item squirrels providing parental care.
+\end{enumerate}
+Once more, we can encode all of the population dynamics of a mutant ``saver'' squirrel in a matrix $D_1$. 
+\begin{equation}
+D_1 =
+\begin{pmatrix}
+    p_1 & p_0 & 1+p_0 \\ p_2 & p_1 & 2(p_1 + p_2) \\ 0 & p_2 & 0
+\end{pmatrix}
+    \label{eqn:D1}
+\end{equation}
+As with $D_0$, the largest positive eigenvalue $\lambda_1$ of $D_1$ is the stable population growth rate, and whether $\lambda_0\gtreqless 1$ determines
+the qualitative nature of the population dynamics (growth, constant size, or shrinking exponentially).
+
+More generally, we may allow for squirrels to cache up to any level $\beta\in\left\{ 0, 1, 2, \ldots \right\}$ before reproducing. A population with cache
+level $\beta$ can be divided into $\beta+2$ categories:
+\begin{enumerate}
+    \item Squirrels having cached $0$ nuts;
+    \item squirrels having cached $1$ nut;
+    \item \dots
+    \item squirrels having cached $\beta$ nuts and not providing parental care; and
+    \item squirrels providing parental care. 
+\end{enumerate}
+Now the population dynamics of squirrels banking up to $\beta$ nuts is given by the matrix $D_\beta$. As previously, the greatest positive eigenvalue
+$\lambda_\beta$ of $D_\beta$ is the fitness of squirrels banking up to $\beta$ nuts before reproducing. 
+\begin{equation}
+D_\beta =
+\begin{pmatrix}
+    p_1 & p_0 & 0 & \cdots & 0 & 1 \\
+    p_2 & p_1 & p_0 & \cdots & 0 & 0 \\
+    0 & p_2 & p_1 & \cdots & 0 & 0 \\
+    \vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+    0 & 0 & 0 & \cdots & p_0 & p_0 \\ 
+    0 & 0 & 0 & \cdots & p_1 & p_1 + p_2 \\ 
+    0 & 0 & 0 & \cdots & p_2 & 0 \\ 
+
+\end{pmatrix}
+    \label{eqn:Dbeta}
+\end{equation}
+
+Towards understanding adaptive pressures on patience, we analyse the relationship between patience and fitness. An increase in patience has two
+opposing effects. On the one hand, banking more nuts results in higher survival probability and therefore increases like expectancy and lifetime
+reproductive output. On the other hand, higher patience results in offspring being produced later in life which tends to slow the rate of population
+growth. Therefore, for each distribution of nuts $(p_0, p_1, p_2)$, we ask: what is the banking level $\beta$ which maximizes fitness $\lambda$? 
+Mathematically, we seek to compute 
+\begin{equation}
+    \beta^*(p_0, p_1, p_2) := \argmax_{\beta\in\N} \lambda_\beta.
+    \label{eqn:betastar}
+\end{equation}
+
+The problem described in equation \ref{eqn:betastar} is analytically intractible. We get some intuitive understanding of the nature of the problem
+by numerical approximations. For instance, for $(p_0, p_1, p_2) = (0.3125, 0.3125, 0.375)$, we compute:
+\begin{table}[H]
+    \centering
+\begin{tabular}{l|l}
+$\beta$ & $\lambda_\beta$    \\ \hline
+0       & 0.891123501019053  \\
+1       & 1.0042807386908956 \\
+2       & 1.0109688024833265 \\
+3       & 1.0119993543876564 \\
+4       & 1.0116325207441923 \\
+5       & 1.010911192617546  \\
+$\vdots$ & $\vdots$
+\end{tabular}
+\end{table}
+From numerical approximations, the trend is that $\lambda_{\beta}$ increases with $\beta$ until it reaches a peak, at which it is maximized. 
+From the table, we read off that $\beta^*(0.3125, 0.3125, 0.375) = 3$. 
+
+More generally, our numerical work indicates that the optimal cache level $\beta^*$ increases as the distribution of nuts becomes less bountiful.
+That is, squirrels foraging in an environment where nuts are plentiful have maximal fitness when they exhibit no patience and use all available
+resources for reproduction. If nuts are less plentiful, however, squirrels are better served to be patient and delay reproduction in favour of
+higher survival probability. A pleasing result of our model setup is that for every cache level $\beta$, there exists some distribution of nuts
+$(p_0, p_1, p_2)$ for which $\beta^*(p_0, p_1, p_2) = \beta$.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale = 0.7]{ternary_optimal_beta.png}
+    \caption{The simplex of points $(p_0, p_1, p_2)$ such that $p_0 + p_1 + p_2 =1$ describes the space of all possible nut distributions.
+        The simplex can be projected onto two dimensional space as a ternary diagram. Each point is a distribution of nuts $(p_0, p_1, p_2)$,
+        and 
+    the colouring of each point indicates the cache level resulting in maximal fitness. When nuts are plentiful (upper right of the diagram),
+squirrels maximize fitness by banking $0$ nuts. If nuts are less available, meaning the distribution shifts toward the bottom left, 
+then banking more nuts is favourable. As $p_2\to p_0$, $\beta^*\to\infty$. For visualization purposes, we stop at $\beta^* = 6$. 
+If $p_0 > p_2$, meaning a squirrel is more likely to find $0$ nuts than $2$ nuts, then fitness $\lambda_\beta < 1$
+for every finite $\beta$. Infinite patience is required to maintain constant population size.}
+    \label{fig:optimal_beta}
+\end{figure}
+
+
+
+\subsection{Discussion and Extension}
+The present setup assumes the distribution of nuts $(p_0, p_1, p_2)$ is constant in time. The results shown in Figure \ref{fig:optimal_beta}
+are therfore the dominant patience phenotype for each constant distribution $(p_0, p_1, p_2).$ However, it is unreasonable to suppose that
+exponential growth takes place indefinitely. 
+A more likely alternative is that resources
+are density dependent. Without specifying the mechanism via which population density determines the distribution of nuts, we abstractly
+posit that some such mechanism exists and ensures that populations neither grow nor decay exponentially, and rather remain at a constant size.
+
+
+Let us suppose that a population of $\beta = 0$ squirrels is in equilibrium. 
+Ecological forces have driven the distribution of nuts to some $(p_0, p_1, p_2)$ at which $\lambda_0 =1$,
+meaning the squirrel population is of constant size. Spontaneously, a mutant squirrel with cache level $\beta = 1$ is born. Computing numerically,
+we see that for all distributions $(p_0,p_1,p_2)$ satisfying $\lambda_0(p_0, p_1, p_2) = 1$, $\lambda_1(p_0,p_1,p_2)>1$. That is, the fitness
+of the mutant (patient) squirrel is greater than that of the resident population. It follows that the mutant population will grow, putting additional
+pressur on resources. The mutant population therefore profits at the expense of the residents, until the $\beta = 0$ squirrels have all died off
+and the $\beta = 1$ squirrels have driven nut distribution to some $(p_0', p_1', p_2')$ satisfying $\lambda_1(p_0', p_1', p_2') = 1$. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{ternary_unit_fitness.png}
+    \caption{Consider a population of $\beta = 0$ squirrels. We assume that ecological forces ensure the distribution of nuts is such
+    that $\lambda_0(p_0, p_1, p_2) = 1$. Graphically, this means that the distribution is somewhere along the black line. If a mutant
+squirrel with $\beta = 1$ arises in the population, then it will flourish in the nut rich environment provided by the $\beta = 0$ resident
+population. As the $\beta = 1$ population expands, it places increasing pressure on the distribution of nuts so that the resident population
+is driven to exctinction. }
+    \label{fig:unit_fitness}
+\end{figure}
+
+Experimentally, it holds that for every cache level $\beta\in\N$, for each distribution $(p_0, p_1, p_2)$ satisfying $\lambda_\beta(p_0, p_1, p_2) = 1$,
+the fitness of a slightly more patient mutant exceeds that of the resident population. That is, $\lambda_{\beta+1}(p_0, p_1, p_2) > 1$. Therefore,
+the process of $\beta = 0$ squirrels being invaded and overtaken by $\beta = 1$ squirrels repeats with $\beta = 2$ squirrels and later 
+$\beta = 3, 4, 5\ldots$ squirrels. Therefore, an evolutionary approach yields the result that ever more patient mutants invade and fixate. In some
+sense, there is an evolutionary ``race to the bottom,'' wherein resources are stretched ever more thinly across an increasing density
+of squirrels. 
+
+
+
+
+
+
+\section{Conclusion}
+
+Patience and intertemporal discounting are topics to which much attention has been paid, but about which there is still a surprising amount
+left to uncover and understand. In particular, diverse fields like economics, psychology, and computer science each view consumption across
+varying time horizons from fundamentally different vantage points and therefore come to starkly different conclusions. 
+Evolutionary game theory is a relatively new set of tools which provides scaffolding for a structured and mathematical discussion of 
+intergenerational developmental processes. 
+We put forward the paradigme that patience is moulded by an evolutionary process, and therefore set out to use the tools from evolutionary
+dynamics to reconcile the theory and practice of intertemporal reward valuation. 
+
+We have herein presented an idealized model of squirrels foraging for and banking/consuming nuts. In this model, an individual's fitness
+is assumed to be its average contribution to the gene pool over the course of its life. The setup and fitness constraints naturally lead to a
+smaller/sooner versus larger/later dilemma: how many offspring to have, and when. Somewhat surprisingly,
+our simple model is capable of generating a maximal diversity of outcomes: every level of patience permissible within the model framework 
+optimizes fitness for some distribution of nuts. We further find evidence that a trait substitution sequence leads to extreme patience,
+in which more patience squirrels invade resident populations forever into the future. 
+
+While interesting in its own right, the model presented here is limited in its capacity to explain the evolutionary origins of intertemporal
+discounting. Whereas squirrel banking touches on how delayed rewards are
+valued less than immediate rewards in an evolutionary framework, we are unable to quantitatively evaluate the relative value of goods received
+at different points in time. A nut today is worth more than a nut tomorrow for any given squirrel, but it is unclear exactly by how much. More 
+general models are likely necessary to analytically understand the evolutionary pressures on consumption across time horizons. 
+
+The present model is also perhaps overly simplistic. 
+In practice, squirrels often bank nuts in preparation for winter
+when nuts are not readily available. 
+One could extend squirrel banking to account for seasonal variation in the
+availability of nuts in conjunction with density dependence. On a practical level, the analytic intractibility of the current
+setup leads us to believe further complications will make agent based simulations the only reasonable way to move forward toward an understanding  
+of evolutionarily stable patience in squirrel banking. 
+
+Despite its limitations and unrealistic elements, squirrel banking is a helpful step toward understanding the evolutionary dynamics of patience. 
+In particular, the mechanistic setup of the model makes it clear that contribution to gene pool (as measured by unit time growth rate) is the most
+reasonable measure of fitness, rather than lifetime reproductive output. Furthermore, we see that reproductive dilemmas (when do I reproduce?) 
+are the most direct evolutionary take on classical smaller/sooner versus larger/later dilemmas. Overall, we hope that this article is the start
+of a trend of applying the tools of evolutionary dynamics to problems not yet considered using those tools. 
+
+
+
+\newpage
+\bibliographystyle{alpha}
+\bibliography{research}{}
+
+
+
+
+
+\end{document}
+
+
+
