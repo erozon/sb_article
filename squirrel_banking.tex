@@ -189,8 +189,7 @@ tradeoff. From the perspective of patience, this translates into a question of f
 or reproduction over a longer time span resulting in more offspring but later in life (larger and later benefit). By considering squirrels with
 varying levels of patience (as measured by cache size before reproduction), we address the question: How much patience is evolutionarily optimal?
 
-
-\section{Model}
+\section{Squirrel Mechanics and Accounting}
 Suppose a squirrel forrages daily for nuts. Each day, the squirrel finds either $0, 1,$ or $2$ nuts, with probabilities $p_0, p_1$, and $p_2$
 respectively. If the squirrel consumes $0$ nuts, it dies. By consuming a single nut, the squirrel keeps itself alive. Finally, should the squirrel
 consume $2$ nuts, it both keeps itself alive and produces an offspring. The offspring is subject to a one day period of parental care during
@@ -198,16 +197,19 @@ which it survives if and only if its parent survives.
 
 The life of a single squirrel is a stochastic process. The squirrel's survival and reproductive events are determined by the random process of
 finding nuts. In a large (or infinite) population of squirrels, we assume nut findings are independent (both between individuals and day to day),
-so that we may interpret that a fraction $p_n$ find $n$ nuts each day (for $n=0,1,2$). We consider the question of population growth: for what distributions 
-$(p_0, p_1, p_2)$ will the squirrel population die out, remain constant, and grow exponentially? The introduction of a demographic matrix
-helps to answer this question. Squirrels can be divided into two categories:
-\begin{enumerate}
-    \item Squirrels not providing parental care; and
-    \item squirrels providing parental care.
-\end{enumerate}
+so that we may interpret that a fraction $p_n$ find $n$ nuts each day (for $n=0,1,2$). We give squirrels the capacity to save nuts, and consider
+the restricted class of saving/consumption strategies indexed by $\beta\in\left\{ 0, 1, 2 \ldots \right\}$. A squirrel with strategy $\beta$
+saves nuts until it has a cache size of $\beta$, after which it uses all nuts to reproduce. 
 
-Transitions between the two states are governed by linear probabilities, so that the matrix $D_0$ encapsulates
-all information necessary to understand the dynamics of the population of squirrels.
+
+We first consider the case of squirrels who bank no nuts, immediately using all available nuts for reproduction. That is, we consider
+first the case of squirrels with strategy $\beta = 0$. 
+The introduction of a demographic matrix
+helps to keep track of a population. Squirrels can be segregated into two distinct populations: they are either providing parental 
+care or they are not. 
+Transitions probabilites are linear and therefore we may keep track of a population using a demorgraphic matrix, wherein the $(i,j)$th entry is the
+probability of transitioning from state $j$ to state $i$. See \cite{stearns92} for a more in depth discussion of such matrices. 
+We let $D_0$ be the demographic matrix for squirrels banking no nuts.  
 \begin{equation}
 D_0 =
 \begin{pmatrix}
@@ -215,23 +217,16 @@ D_0 =
 \end{pmatrix}
     \label{eqn:D0}
 \end{equation}
-We may codify an initial population of squirrels where no individual is providing parental care by the state vector $\left[ 1, 0 \right]^\intercal$. 
-On day $t\ge 0$, the population will be in state $D_0^t\cdot \left[1, 0\right]^\intercal$. Standard results from the study of structured populations
-imply (subject to minor diagonalizability requirements) that the largest positive eigenvalue $\lambda_0$ of $D_0$ is the growth 
-rate of the population of squirrels. The population converges to a stable proportion in each class, and then whether $\lambda_0\gtreqless 1$ 
-detetmines if the population is growing, constant, or decaying exponentially. Throughout, we refer to growth rate and fitness interchangeably. 
 
-One objective for this model is to understand the evolution of patience. To the end of modelling differing levels of patience, we allow
-squirrels to bank nuts to guard against starvation.
-Rather than using all additional nuts to produce offspring immediately, a more patient population first caches an additional nut to guard against starvation
-and later uses additional nuts to produce offspring. Intuitively, therefore, patient squirrels will delay reproduction but on average live
-longer and so produce more offspring. A population of patient squirrels can be divided into three disjoint categories:
+Consider next a population of squirrels, each of which banks one nut before using additional resources to produce offspring: $\beta =1$. 
+In this case, squirrels may be partitioned into three distinct categories:
 \begin{enumerate}
     \item Squirrels having cached $0$ nuts;
     \item squirrels having cached $1$ nut and not providing parental care; and
     \item squirrels providing parental care.
 \end{enumerate}
-Once more, we can encode all of the population dynamics of a mutant ``saver'' squirrel in a matrix $D_1$. 
+The population dynamics of  $\beta = 1$ squirrels are easily accounted for in the matrix $D_1$. Once more, the $(i,j)$th entry is the
+probability of transitioning from state $j$ to state $i$.
 \begin{equation}
 D_1 =
 \begin{pmatrix}
@@ -239,20 +234,17 @@ D_1 =
 \end{pmatrix}
     \label{eqn:D1}
 \end{equation}
-As with $D_0$, the largest positive eigenvalue $\lambda_1$ of $D_1$ is the stable population growth rate, and whether $\lambda_0\gtreqless 1$ determines
-the qualitative nature of the population dynamics (growth, constant size, or shrinking exponentially).
 
-More generally, we may allow for squirrels to cache up to any level $\beta\in\left\{ 0, 1, 2, \ldots \right\}$ before reproducing. A population with cache
-level $\beta$ can be divided into $\beta+2$ categories:
+More generally, we can construct demographic matrices for general strategies $\beta \ge 2$. 
+A population with cache level $\beta$ can be divided into $\beta+2$ categories:
 \begin{enumerate}
     \item Squirrels having cached $0$ nuts;
     \item squirrels having cached $1$ nut;
-    \item \dots
-    \item squirrels having cached $\beta$ nuts and not providing parental care; and
-    \item squirrels providing parental care. 
+    \item []\dots
+    \item[$\beta+1$.] squirrels having cached $\beta$ nuts and not providing parental care; and
+    \item[$\beta+2$.] squirrels providing parental care. 
 \end{enumerate}
-Now the population dynamics of squirrels banking up to $\beta$ nuts is given by the matrix $D_\beta$. As previously, the greatest positive eigenvalue
-$\lambda_\beta$ of $D_\beta$ is the fitness of squirrels banking up to $\beta$ nuts before reproducing. 
+A population of $\beta$ strategy squirrels is most easily accounted for using the demographic matrix $D_\beta$. 
 \begin{equation}
 D_\beta =
 \begin{pmatrix}
@@ -263,21 +255,33 @@ D_\beta =
     0 & 0 & 0 & \cdots & p_0 & p_0 \\ 
     0 & 0 & 0 & \cdots & p_1 & p_1 + p_2 \\ 
     0 & 0 & 0 & \cdots & p_2 & 0 \\ 
-
 \end{pmatrix}
     \label{eqn:Dbeta}
 \end{equation}
 
-Towards understanding adaptive pressures on patience, we analyse the relationship between patience and fitness. An increase in patience has two
-opposing effects. On the one hand, banking more nuts results in higher survival probability and therefore increases like expectancy and lifetime
-reproductive output. On the other hand, higher patience results in offspring being produced later in life which tends to slow the rate of population
-growth. Therefore, for each distribution of nuts $(p_0, p_1, p_2)$, we ask: what is the banking level $\beta$ which maximizes fitness $\lambda$? 
-Mathematically, we seek to compute 
+\section{Evolutionary Dynamics and Fitness}
+At a high level, we are trying to understand how adaptive pressures determine the patience of a population of squirrels. There are several
+possible outcomes which we might observe.
+\begin{itemize}
+    \item Stability: adaptive pressures dictate that some $\beta^*$ is optimal. In the long run, only squirrls using strategy $\beta = \beta^*$ will
+        thrive, and all others will die out.
+    \item Cyclic outcomes: there is no one optimal strategy, but rather the population oscillates between various strategies indefinitely
+        in a recurring patern.
+    \item Non-cyclic dynamics: the population does not converge to any strategy, and also does not repeat its trajectory. Instead, adaptive
+        pressures force squirrels to adopt different strategies indefinitely. 
+\end{itemize}
+To determine which outcome occurs, we need to describe in more depth how squirrels interact with their environment. As a first attempt,
+suppose that the distribution of nuts $(p_0, p_1, p_2)$ is independent of the quantity of squirrels foraging. Fix a distribution
+$(p_0, p_1, p_2)$. Absent density dependent
+resources, squirrel populations will grow (or decay) exponentially indefinitely. A convenient feature of the demographic matrices $D_\beta$ (subject
+to minor diagonalizability requirements, see \cite{stearns92} for a discussion),
+is that the maximal eigenvalue of $D_\beta$ (call it $\lambda_\beta$) is the population growth rate. In populations that grow exponentially,
+those with maximal growth rate dominate. Therefore, if resources are independent of population size, the adaptive outcome is to choose
+$\beta$ so as to maximize $\lambda_\beta$. Mathematically, we seek to compute 
 \begin{equation}
     \beta^*(p_0, p_1, p_2) := \argmax_{\beta\in\N} \lambda_\beta.
     \label{eqn:betastar}
 \end{equation}
-
 The problem described in equation \ref{eqn:betastar} is analytically intractible. We get some intuitive understanding of the nature of the problem
 by numerical approximations. For instance, for $(p_0, p_1, p_2) = (0.3125, 0.3125, 0.375)$, we compute:
 \begin{table}[H]
@@ -293,20 +297,18 @@ $\beta$ & $\lambda_\beta$    \\ \hline
 $\vdots$ & $\vdots$
 \end{tabular}
 \end{table}
-From numerical approximations, the trend is that $\lambda_{\beta}$ increases with $\beta$ until it reaches a peak, at which it is maximized. 
-From the table, we read off that $\beta^*(0.3125, 0.3125, 0.375) = 3$. 
-
-More generally, our numerical work indicates that the optimal cache level $\beta^*$ increases as the distribution of nuts becomes less bountiful.
+The value of $\lambda_\beta$ increases until $\beta = 3$, after which it decreases indefinitely. More generally, we experimentally find that
+for each distribution of nuts $(p_0, p_1, p_2)$, the value of $\lambda_\beta$ is maximized at some $\beta^*$. 
+Our numerical work indicates that the optimal cache level $\beta^*$ increases as the distribution of nuts becomes less bountiful.
 That is, squirrels foraging in an environment where nuts are plentiful have maximal fitness when they exhibit no patience and use all available
 resources for reproduction. If nuts are less plentiful, however, squirrels are better served to be patient and delay reproduction in favour of
 higher survival probability. A pleasing result of our model setup is that for every cache level $\beta$, there exists some distribution of nuts
 $(p_0, p_1, p_2)$ for which $\beta^*(p_0, p_1, p_2) = \beta$.
 
-
 \begin{figure}[H]
     \centering
     \includegraphics[scale = 0.7]{ternary_optimal_beta.png}
-    \caption{The simplex of points $(p_0, p_1, p_2)$ such that $p_0 + p_1 + p_2 =1$ describes the space of all possible nut distributions.
+    \caption[Ternary plot showing $\lambda$ maximizing patience for each nut distribution $(p_0, p_1, p_1)$.]{The simplex of points $(p_0, p_1, p_2)$ such that $p_0 + p_1 + p_2 =1$ describes the space of all possible nut distributions.
         The simplex can be projected onto two dimensional space as a ternary diagram. Each point is a distribution of nuts $(p_0, p_1, p_2)$,
         and 
     the colouring of each point indicates the cache level resulting in maximal fitness. When nuts are plentiful (upper right of the diagram),
@@ -319,7 +321,10 @@ for every finite $\beta$. Infinite patience is required to maintain constant pop
 
 
 
-\subsection{Discussion and Extension}
+
+
+
+\section{Density Dependence and Trait Substitution Sequence}
 The present setup assumes the distribution of nuts $(p_0, p_1, p_2)$ is constant in time. The results shown in Figure \ref{fig:optimal_beta}
 are therfore the dominant patience phenotype for each constant distribution $(p_0, p_1, p_2).$ However, it is unreasonable to suppose that
 exponential growth takes place indefinitely. 
@@ -333,13 +338,13 @@ Ecological forces have driven the distribution of nuts to some $(p_0, p_1, p_2)$
 meaning the squirrel population is of constant size. Spontaneously, a mutant squirrel with cache level $\beta = 1$ is born. Computing numerically,
 we see that for all distributions $(p_0,p_1,p_2)$ satisfying $\lambda_0(p_0, p_1, p_2) = 1$, $\lambda_1(p_0,p_1,p_2)>1$. That is, the fitness
 of the mutant (patient) squirrel is greater than that of the resident population. It follows that the mutant population will grow, putting additional
-pressur on resources. The mutant population therefore profits at the expense of the residents, until the $\beta = 0$ squirrels have all died off
+pressure on resources. The mutant population therefore profits at the expense of the residents, until the $\beta = 0$ squirrels have all died off
 and the $\beta = 1$ squirrels have driven nut distribution to some $(p_0', p_1', p_2')$ satisfying $\lambda_1(p_0', p_1', p_2') = 1$. 
 
 \begin{figure}[H]
     \centering
     \includegraphics[scale=0.7]{ternary_unit_fitness.png}
-    \caption{Consider a population of $\beta = 0$ squirrels. We assume that ecological forces ensure the distribution of nuts is such
+    \caption[Ternary plot showing invasion capacity of patient squirrels under density dependence.]{Consider a population of $\beta = 0$ squirrels. We assume that ecological forces ensure the distribution of nuts is such
     that $\lambda_0(p_0, p_1, p_2) = 1$. Graphically, this means that the distribution is somewhere along the black line. If a mutant
 squirrel with $\beta = 1$ arises in the population, then it will flourish in the nut rich environment provided by the $\beta = 0$ resident
 population. As the $\beta = 1$ population expands, it places increasing pressure on the distribution of nuts so that the resident population
@@ -348,12 +353,39 @@ is driven to exctinction. }
 \end{figure}
 
 Experimentally, it holds that for every cache level $\beta\in\N$, for each distribution $(p_0, p_1, p_2)$ satisfying $\lambda_\beta(p_0, p_1, p_2) = 1$,
-the fitness of a slightly more patient mutant exceeds that of the resident population. That is, $\lambda_{\beta+1}(p_0, p_1, p_2) > 1$. Therefore,
+the fitness of a slightly more patient mutant exceeds that of the resident population. That is, 
+$$ \lambda_{\beta}(p_0, p_1, p_2) = 1 \implies  \lambda_{\beta+1}(p_0, p_1, p_2) > 1.$$
+Therefore,
 the process of $\beta = 0$ squirrels being invaded and overtaken by $\beta = 1$ squirrels repeats with $\beta = 2$ squirrels and later 
 $\beta = 3, 4, 5\ldots$ squirrels. Therefore, an evolutionary approach yields the result that ever more patient mutants invade and fixate. In some
 sense, there is an evolutionary ``race to the bottom,'' wherein resources are stretched ever more thinly across an increasing density
 of squirrels. 
 
+\section{The Evolution of Patience}
+Squirrel banking is a highly constrained setting within which we analyze the adaptive pressures on patience.
+Nevertheless, squirrel banking helps us to recognize some key elements in the evolution of patience beyond the model itself.
+
+Consider the time dilemma faced by squirrels. The decision to bank to $\beta+1$ nuts rather than $\beta$ nuts before reproducing is,
+above all else, a decision to delay reproduction in favour of producing more offspring over the entire lifetime. The induced smaller/sooner versus
+larger/later decision squirrels make is therefore between total lifetime progeny and more quickly generating those progeny. Figure \ref{fig:lh_comparison}
+allows us to compare the life histories of squirrels with identical growth rates. 
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale = 0.7]{lh_comparison.png}
+    \caption[Life histories of patient and impulsive squirrels.]{We compare life histories to understand the patience tradeoff faced by squirrels. If the distribution of nuts
+    is $(p_0, p_1, p_2) \approx (0.11, 0.47, 0.42)$, then the growth rates of $\beta = 0$ and $\beta = 1$ squirrels are
+equal: $\lambda_0 \approx \lambda_1 \approx 1.1317$. The figure shows the surprising extent to which immediacy benefits population
+growth. Whereas more patient squirrels produce considerably more progeny over the course of their lifetime, the three day period over which
+impatient squirrels reproduce more is enough to make it so that the growth rate is the same between the two populations.}
+    \label{fig:lh_comparison}
+\end{figure}
+
+Life history comparison raises an important point. Whereas lifetime progeny is a popular fitness measure in ecology \cite{stearns92}, it is
+insufficient as a measure of reproductive success for our analysis of the evolution of patience. Instead, monomorphic population growth rate,
+or the Lyapunov exponent $\lambda$, best describes reproductive success. 
 
 
 
@@ -374,7 +406,7 @@ is assumed to be its average contribution to the gene pool over the course of it
 smaller/sooner versus larger/later dilemma: how many offspring to have, and when. Somewhat surprisingly,
 our simple model is capable of generating a maximal diversity of outcomes: every level of patience permissible within the model framework 
 optimizes fitness for some distribution of nuts. We further find evidence that a trait substitution sequence leads to extreme patience,
-in which more patience squirrels invade resident populations forever into the future. 
+in which more patient squirrels invade resident populations forever into the future. 
 
 While interesting in its own right, the model presented here is limited in its capacity to explain the evolutionary origins of intertemporal
 discounting. Whereas squirrel banking touches on how delayed rewards are
